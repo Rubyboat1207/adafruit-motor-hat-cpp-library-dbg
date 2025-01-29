@@ -25,8 +25,9 @@
  */
 
 #pragma once
-
+#ifndef DBG
 #include <linux/i2c-dev.h>
+#endif
 
 /** Represents an I2C device.
  *

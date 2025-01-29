@@ -66,18 +66,30 @@ void AdafruitDCMotor::run (Command command)
     switch (command)
     {
         case kForward:
+            #ifdef DBG
+                std::cout << "Running motor Forward" << std::endl;
+            #endif
             setPin (in1Pin, true);
             setPin (in2Pin, false);
             break;
         case kBackward:
+            #ifdef DBG
+                std::cout << "Running motor Back" << std::endl;
+            #endif
             setPin (in1Pin, false);
             setPin (in2Pin, true);
             break;
         case kBrake:
+            #ifdef DBG
+                std::cout << "Put motor in break mode" << std::endl;
+            #endif
             setPin (in1Pin, true);
             setPin (in2Pin, true);
             break;
         case kRelease:
+            #ifdef DBG
+                std::cout << "Set motor to release mode" << std::endl;
+            #endif
             setPin (in1Pin, false);
             setPin (in2Pin, false);
             break;
@@ -90,6 +102,9 @@ void AdafruitDCMotor::setSpeed (int speed)
 {
     speed = std::max (0, std::min (speed, 255));
     controller.setChannel (pwmPin, 0, speed * 16);
+    #ifdef WIN32
+        std::cout << "Set motor speed to " << speed << std::endl;
+    #endif
 }
 
 void AdafruitDCMotor::setPin (int pin, bool enabled)

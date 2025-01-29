@@ -29,9 +29,11 @@
 
 #include <string>
 
-#include <unistd.h>
 #include <sys/stat.h>
+#ifndef DBG
+#include <unistd.h>
 #include <sys/ioctl.h>
+#endif
 #include <fcntl.h>
 
 int getDefaultBusNumber()
@@ -87,17 +89,19 @@ void I2CDevice::openHandle()
     closeHandle();
 
     std::string filename (getFilenameForBus (busNumber));
-
+    #ifndef DBG
     handle = open (filename.c_str(), O_RDWR);
 
     if (!isValid())
     {
         log::strerror ("Couldn't open device");
     }
+    #endif
 }
 
 void I2CDevice::closeHandle()
 {
+    #ifndef DBG
     if (isValid())
     {
         if (close (handle) < 0)
@@ -105,14 +109,17 @@ void I2CDevice::closeHandle()
             log::strerror ("Couldn't close device");
         }
     }
+    #endif
 }
 
 void I2CDevice::selectDevice()
 {
+    #ifndef DBG
     if (ioctl (handle, I2C_SLAVE, address & 0x7F) < 0)
     {
         log::strerror ("Failed to select device");
     }
+    #endif
 }
 
 void I2CDevice::writeByteData (int deviceRegister, int data)
@@ -122,22 +129,25 @@ void I2CDevice::writeByteData (int deviceRegister, int data)
         static_cast<char>(deviceRegister & 0xFF),
         static_cast<char>(data & 0xFF)
     };
-
+    #ifndef DBG
     if (write (handle, buffer, 2) != 2)
     {
         log::strerror ("Failed to write to device");
     }
+    #endif
 }
 
 int I2CDevice::readByteData (int deviceRegister)
 {
     char buffer { 0 };
 
+    #ifndef DBG
     if (read (handle, &buffer, 1) != 1)
     {
         log::strerror ("Failed to read from device");
         return -1;
     }
+    #endif
 
     return static_cast<int>(buffer);
 }

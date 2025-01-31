@@ -94,6 +94,9 @@ namespace util
     */
     inline int getRaspberryPiRevisionNumber()
     {
+#ifdef DBG
+        return -1;
+#endif
         std::regex revision_regex { "^Revision\\s+:\\s+(\\w+)$",
                                     std::regex::icase };
         std::smatch revision_match;
